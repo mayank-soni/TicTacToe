@@ -11,7 +11,7 @@ size = width, height = 600, 400
 black = (0, 0, 0)
 white = (255, 255, 255)
 
-BOARD_SIZE = ttt.BOARD_SIZE
+BOARD_SIDE_LENGTH = ttt.BOARD_SIDE_LENGTH
 
 screen = pygame.display.set_mode(size)
 
@@ -70,12 +70,12 @@ while True:
 
         # Draw game board
         tile_size = 80
-        tile_origin = (width / 2 - (BOARD_SIZE/2 * tile_size),
-                       height / 2 - (BOARD_SIZE/2 * tile_size))
+        tile_origin = (width / 2 - (BOARD_SIDE_LENGTH/2 * tile_size),
+                       height / 2 - (BOARD_SIDE_LENGTH/2 * tile_size))
         tiles = []
-        for i in range(BOARD_SIZE):
+        for i in range(BOARD_SIDE_LENGTH):
             row = []
-            for j in range(BOARD_SIZE):
+            for j in range(BOARD_SIDE_LENGTH):
                 rect = pygame.Rect(
                     tile_origin[0] + j * tile_size,
                     tile_origin[1] + i * tile_size,
@@ -91,20 +91,23 @@ while True:
                 row.append(rect)
             tiles.append(row)
 
-        game_over = ttt.terminal(board)
-        player = ttt.player(board)
+        # NOTE: Terminal() needs to be checked after each move to 
+        #   1. Prevent there from being multiple winners. 
+        #   2. Check if board is full
+        game_over, winner, utility = ttt.terminal(board) 
 
         # Show title
         if game_over:
-            winner = ttt.winner(board)
             if winner is None:
                 title = f"Game Over: Tie."
             else:
                 title = f"Game Over: {winner} wins."
-        elif user == player:
-            title = f"Play as {user}"
         else:
-            title = f"Computer thinking..."
+            player = ttt.player(board)
+            if user == player:
+                title = f"Play as {user}"
+            else:
+                title = f"Computer thinking..."
         title = largeFont.render(title, True, white)
         titleRect = title.get_rect()
         titleRect.center = ((width / 2), 30)
@@ -124,8 +127,8 @@ while True:
         click, _, _ = pygame.mouse.get_pressed()
         if click == 1 and user == player and not game_over:
             mouse = pygame.mouse.get_pos()
-            for i in range(BOARD_SIZE):
-                for j in range(BOARD_SIZE):
+            for i in range(BOARD_SIDE_LENGTH):
+                for j in range(BOARD_SIDE_LENGTH):
                     if (board[i][j] == ttt.EMPTY and tiles[i][j].collidepoint(mouse)):
                         board = ttt.result(board, (i, j))
 
