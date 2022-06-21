@@ -10,6 +10,6 @@ Function list of tictactoe.py was provided by course instructors. Functions were
 Changes over original implementation:
 1. Edited to allow for flexible sizing of board (i.e. n x n instead of hard-coded 3 x 3)
      - To modify: Change BOARD_SIDE_LENGTH variable in tictactoe.py to desired n
-     - However, any board size above 3 is too slow to run on my computer (O(n**2)! algorithm)
+     - However, any board size above 3 is too slow to run on my computer (O[(n**2)!] algorithm)
      - 
 2. Other minor changes to program design (see comments in code)
